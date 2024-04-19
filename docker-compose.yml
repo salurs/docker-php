@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./projects:/var/www/html
+
+  php81:
+    # image: php:8.1-fpm
+    build: 
+      context: .
+      dockerfile: ./docker/php81/Dockerfile
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./projects:/var/www/html
+    
+  php82:
+    # image: php:8.2-fpm
+    build: 
+      context: .
+      dockerfile: ./docker/php82/Dockerfile
+    ports:
+      - "9001:9000"
+    volumes:
+      - ./projects:/var/www/html
+  php83:
+    # image: php:8.2-fpm
+    build:
+      context: .
+      dockerfile: ./docker/php83/Dockerfile
+    ports:
+      - "9002:9000"
+    volumes:
+      - ./projects:/var/www/html
+
+  mysql:
+    image: mysql:latest
+    hostname: mysql
+    ports:
+      - "3306:3306"
+      - "3307:3306"
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+
+  # sqlite:
+  #   image: linuxserver/sqlitebrowser
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ./docker/mysql:/var/lib/sqlite
+
+  # redis:
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - ./docker/mysql:/var/lib/redis
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+  #   environment:
+  #     - discovery.type=single-node
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - ./docker/mysql:/var/lib/elasticsearch
+
+  # mongodb:
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - ./docker/mysql:/var/lib/mongodb
+
+  # mailhog:
+  #   image: mailhog/mailhog:latest
+  #   ports:
+  #     - "8025:8025"
+  #   volumes:
+  #     - ./docker/mysql:/var/lib/mailhog
